@@ -9,7 +9,7 @@ RUN npm cache clean --force
 RUN rm -rf ~/.npm
 
 RUN npm i -g nodemon
-COPY .. .
+COPY . .
 
 RUN npm install
 
