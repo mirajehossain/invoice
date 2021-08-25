@@ -35,6 +35,77 @@ module.exports = {
     }
   },
 
+  async invoiceSummary(req, res) {
+    try {
+      let {
+        startDate, endDate,
+      } = req.query;
+
+      const filter = {};
+      if (startDate && endDate) {
+        startDate = new Date(startDate);
+        endDate = new Date(endDate);
+        startDate.setHours(0, 0, 0);
+        endDate.setHours(23, 59, 59);
+        filter.created_at = {
+          $gte: startDate,
+          $lte: endDate,
+        };
+      }
+      const summary = await InvoiceModel.aggregate([
+        { $match: filter },
+        {
+          $group: {
+            _id: {
+              created_at: { $dateToString: { format: '%Y-%m-%d', date: '$created_at' } },
+              customer: '$user_id',
+            },
+            invoiceCount: { $sum: 1 },
+          },
+        },
+        {
+          $lookup: {
+            from: 'users', localField: '_id.customer', foreignField: '_id', as: 'details',
+          },
+        },
+        { $project: { 'details.password': 0, 'details.created_at': 0, 'details.updated_at': 0 } },
+        {
+          $group: {
+            _id: '$_id.created_at',
+            invoices: {
+              $push: {
+                user: '$details',
+                count: '$invoiceCount',
+              },
+            },
+            count: { $sum: '$invoiceCount' },
+          },
+        },
+        { $sort: { count: -1 } },
+        {
+          $project: {
+            _id: 0,
+            date: '$_id',
+            invoices: '$invoices',
+            count: '$count',
+          },
+        },
+      ]);
+
+      return res.status(200).send({
+        success: true,
+        data: summary,
+      });
+    } catch (e) {
+      console.log(e);
+      return res.status(500).send({
+        success: false,
+        message: 'An error occur',
+        error: e.message,
+      });
+    }
+  },
+
   async getInvoices(req, res) {
     try {
       const {
@@ -88,7 +159,7 @@ module.exports = {
             'user.password': 0,
           },
         },
-      ]).skip(skip)
+      ]).sort({ created_at: -1 }).skip(skip)
         .limit(Number(limit));
       const count = await InvoiceModel.countDocuments(filter);
 

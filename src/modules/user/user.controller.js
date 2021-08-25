@@ -11,6 +11,7 @@ module.exports = {
       }
       const users = await UserModel
         .find(filter, { password: 0 })
+        .sort({ created_at: -1 })
         .skip(skip)
         .limit(Number(limit))
         .lean();

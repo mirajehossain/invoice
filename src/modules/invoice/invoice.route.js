@@ -8,6 +8,7 @@ const InvoiceController = require('./invoice.controller');
 const router = express.Router();
 
 router.get('/', InvoiceController.getInvoices);
+router.get('/summary', InvoiceController.invoiceSummary);
 router.get('/:invoiceNo', InvoiceController.getInvoice);
 
 router.post('/',
