@@ -8,6 +8,7 @@ const InvoiceController = require('./invoice.controller');
 const router = express.Router();
 
 router.get('/', InvoiceController.getInvoices);
+router.get('/:invoiceNo', InvoiceController.getInvoice);
 
 router.post('/',
   middleware.joiValidator(schema.createInvoice, JOI.property.body),

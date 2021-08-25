@@ -40,8 +40,7 @@ module.exports = {
       const {
         page = 1, limit = 10, invoiceNo, username,
       } = req.query;
-      const filter = {
-      };
+      const filter = {};
       const skip = Number(limit) * (Number(page) - 1);
       if (username) {
         const user = await UserModel.findOne({ username });
@@ -50,7 +49,7 @@ module.exports = {
             .status(400)
             .send({
               success: false,
-              message: 'User does not founnd',
+              message: 'User does not found',
             });
         }
 
@@ -83,6 +82,7 @@ module.exports = {
         { $match: filter },
         itemLookup,
         userLookup,
+        { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
         {
           $project: {
             'user.password': 0,
@@ -90,12 +90,63 @@ module.exports = {
         },
       ]).skip(skip)
         .limit(Number(limit));
-
       const count = await InvoiceModel.countDocuments(filter);
+
       return res.status(200).send({
         success: true,
         data: invoices,
         count,
+      });
+    } catch (e) {
+      console.log(e);
+      return res.status(500).send({
+        success: false,
+        message: 'An error occur',
+        error: e.message,
+      });
+    }
+  },
+
+  async getInvoice(req, res) {
+    try {
+      const { invoiceNo } = req.params;
+      const filter = {
+        invoice_no: invoiceNo,
+      };
+
+      const itemLookup = {
+        $lookup: {
+          from: 'invoice_items',
+          localField: 'invoice_no',
+          foreignField: 'invoice_no',
+          as: 'invoice_items',
+        },
+      };
+
+      const userLookup = {
+        $lookup: {
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'user',
+        },
+      };
+
+      const invoice = await InvoiceModel.aggregate([
+        { $match: filter },
+        itemLookup,
+        userLookup,
+        { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+        {
+          $project: {
+            'user.password': 0,
+          },
+        },
+      ]);
+
+      return res.status(200).send({
+        success: true,
+        data: invoice.length ? invoice[0] : {},
       });
     } catch (e) {
       console.log(e);
