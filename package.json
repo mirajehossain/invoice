@@ -7,6 +7,7 @@
     "start": "node src/app.js",
     "start:dev": "nodemon src/app.js",
 		"seed:user": "node src/seeders/user.js",
+		"seed:invoice": "node src/seeders/invoice.js",
     "test": "node_modules/.bin/mocha  tests/**/*.test.js --timeout 10000"
   },
   "dependencies": {
