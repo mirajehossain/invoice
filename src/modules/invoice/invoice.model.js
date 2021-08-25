@@ -13,7 +13,7 @@ const InvoiceSchema = new Schema({
   status: { type: Schema.Types.String },
   total: { type: Schema.Types.Number },
 
-}, { versionKey: false, timestamps: true });
+}, { versionKey: false, timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
 
 const InvoiceModel = mongoose.model('invoices', InvoiceSchema);
 
@@ -23,7 +23,7 @@ const InvoiceItemSchema = new Schema({
   quantity: { type: Schema.Types.Number },
   price: { type: Schema.Types.Number },
 
-}, { versionKey: false, timestamps: true });
+}, { versionKey: false, timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
 
 const InvoiceItemModel = mongoose.model('invoice_items', InvoiceItemSchema);
 module.exports = {

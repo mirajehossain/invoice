@@ -19,7 +19,7 @@ const UserSchema = new Schema({
   },
   image: { type: String, required: false },
 
-}, { versionKey: false, timestamps: true });
+}, { versionKey: false, timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
 
 module.exports = {
   UserModel: mongoose.model('users', UserSchema),
