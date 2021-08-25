@@ -1,3 +1,4 @@
+const { invoiceStatus } = require('../../config/constants');
 const { userType } = require('../../config/constants');
 const { UserModel } = require('../user/user.model');
 const { InvoiceModel, InvoiceItemModel } = require('./invoice.model');
@@ -13,7 +14,7 @@ module.exports = {
         user_id: req.user._id,
         address: body.address,
         contact_number: body.contact_number,
-        status: 'pending',
+        status: invoiceStatus.pending,
         total,
         invoice_no: invoiceNo,
       };

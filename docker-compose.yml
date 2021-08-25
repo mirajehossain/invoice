@@ -9,7 +9,7 @@ services:
     container_name: invoice_service
     restart: unless-stopped
     env_file:
-      - ../.env
+      - ./.env
     ports:
       - "8000:8000"
     command: bash -c "npm run start:dev"

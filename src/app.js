@@ -2,6 +2,8 @@ const express = require('express');
 const passport = require('passport');
 const http = require('http');
 const dotenv = require('dotenv');
+const morgan = require('morgan');
+
 const cors = require('cors');
 const { graphqlHTTP } = require('express-graphql');
 
@@ -23,6 +25,7 @@ dotenv.config('.env');
 const extensions = ({ context }) => ({
   runTime: Date.now() - context.startTime,
 });
+
 // connect DB
 db.connection().then(() => {
   console.log('database is connected');
@@ -35,6 +38,7 @@ app.use(passport.initialize());
 passport.serializeUser(serializeUser);
 passport.use(BearerStrategy);
 
+app.use(morgan('dev'));
 
 const corsOptions = {
   origin: true,
@@ -49,7 +53,7 @@ app.use(express.urlencoded({
   extended: true,
 }));
 
-
+// graphql middleware
 app.use(
   '/graphql',
   // eslint-disable-next-line no-unused-vars

@@ -11,7 +11,6 @@ module.exports.BearerStrategy = new BearerStrategy(
         .lean();
       if (!user) { return done(null, false); }
       return done(null, user, { scope: 'read' });
-      // req.authInfo
     } catch (e) {
       return done(e);
     }

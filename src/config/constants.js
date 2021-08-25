@@ -11,4 +11,11 @@ module.exports = {
     user: 'user',
     customer: 'customer',
   },
+
+  invoiceStatus: {
+    pending: 'pending',
+    processing: 'processing',
+    shipped: 'shipped',
+    delivered: 'delivered',
+  },
 };
