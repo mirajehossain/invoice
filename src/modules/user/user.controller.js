@@ -19,8 +19,8 @@ module.exports = {
       const count = await UserModel.countDocuments(filter);
       return res.status(200).send({
         success: true,
-        data: users,
         count,
+        data: users,
       });
     } catch (e) {
       console.log(e);
