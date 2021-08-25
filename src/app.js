@@ -3,11 +3,13 @@ const passport = require('passport');
 const http = require('http');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const { graphqlHTTP } = require('express-graphql');
 
 const { BearerStrategy, serializeUser } = require('./modules/auth/authenticator');
 const AuthRoute = require('./modules/auth/auth.route');
 const UserRoute = require('./modules/user/user.route');
 const db = require('./config/database');
+const graphqlSchema = require('./modules/graphql/schema');
 
 const app = express();
 
@@ -17,7 +19,9 @@ const port = process.env.PORT || 8000;
 // initialize dotenv
 dotenv.config('.env');
 
-
+const extensions = ({ context }) => ({
+  runTime: Date.now() - context.startTime,
+});
 // connect DB
 db.connection().then(() => {
   console.log('database is connected');
@@ -43,6 +47,18 @@ app.use(express.json());
 app.use(express.urlencoded({
   extended: true,
 }));
+
+
+app.use(
+  '/graphql',
+  // eslint-disable-next-line no-unused-vars
+  graphqlHTTP(request => ({
+    context: { startTime: Date.now() },
+    graphiql: true,
+    schema: graphqlSchema,
+    extensions,
+  })),
+);
 
 
 // Set root route

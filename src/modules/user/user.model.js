@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { composeWithMongoose } = require('graphql-compose-mongoose');
 
 const { Schema } = mongoose;
 
@@ -21,5 +22,6 @@ const UserSchema = new Schema({
 }, { versionKey: false, timestamps: true });
 
 module.exports = {
-  UserModel: mongoose.model('User', UserSchema),
+  UserModel: mongoose.model('users', UserSchema),
+  UserTC: composeWithMongoose(mongoose.model('users', UserSchema)),
 };
