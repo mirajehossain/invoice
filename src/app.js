@@ -8,6 +8,7 @@ const { graphqlHTTP } = require('express-graphql');
 const { BearerStrategy, serializeUser } = require('./modules/auth/authenticator');
 const AuthRoute = require('./modules/auth/auth.route');
 const UserRoute = require('./modules/user/user.route');
+const InvoiceRoute = require('./modules/invoice/invoice.route');
 const db = require('./config/database');
 const graphqlSchema = require('./modules/graphql/schema');
 
@@ -68,6 +69,7 @@ app.get('/', (req, res) => res.send({ message: 'welcome to the api service' }));
 app.use('/api/auth/', AuthRoute);
 app.use('/api/v1/*', passport.authenticate('bearer'));
 app.use('/api/v1/users', UserRoute);
+app.use('/api/v1/invoices', InvoiceRoute);
 
 
 /**

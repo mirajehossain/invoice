@@ -2,7 +2,6 @@ const validatorMiddleware = (schema, property) => async (req, res, next) => {
   try {
     // property = 'body', 'query', 'params'
     const { error } = await schema.validateAsync(req[property]);
-    console.log('error:---', error);
     if (!error) return next();
 
     return res.status(422).send({
