@@ -7,7 +7,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const { graphqlHTTP } = require('express-graphql');
 
-const { BearerStrategy, serializeUser } = require('./modules/auth/authenticator');
+const { serializeUser, GoogleStrategy } = require('./modules/auth/authenticator');
 const AuthRoute = require('./modules/auth/auth.route');
 const UserRoute = require('./modules/user/user.route');
 const InvoiceRoute = require('./modules/invoice/invoice.route');
@@ -36,7 +36,17 @@ db.connection().then(() => {
 // passport middleware
 app.use(passport.initialize());
 passport.serializeUser(serializeUser);
-passport.use(BearerStrategy);
+passport.use(GoogleStrategy);
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile'] }));
+
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/api/auth/login' }),
+  (req, res) => {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
 
 app.use(morgan('dev'));
 
@@ -56,8 +66,7 @@ app.use(express.urlencoded({
 // graphql middleware
 app.use(
   '/graphql',
-  // eslint-disable-next-line no-unused-vars
-  graphqlHTTP(request => ({
+  graphqlHTTP(() => ({
     context: { startTime: Date.now() },
     graphiql: true,
     schema: graphqlSchema,
@@ -71,7 +80,7 @@ app.get('/', (req, res) => res.send({ message: 'welcome to the api service' }));
 
 // Routing
 app.use('/api/auth/', AuthRoute);
-app.use('/api/v1/*', passport.authenticate('bearer'));
+app.use('/api/v1/*', passport.authenticate('google'));
 app.use('/api/v1/users', UserRoute);
 app.use('/api/v1/invoices', InvoiceRoute);
 
