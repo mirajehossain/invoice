@@ -82,7 +82,10 @@ app.get('/', (req, res) => res.send({ message: 'welcome to the api service' }));
 
 // Routing
 app.use('/', AuthRoute);
-app.use('/api/v1/*', isLoggedIn);
+
+if (process.env.NODE_ENV !== 'test') {
+  app.use('/api/v1/*', isLoggedIn);
+}
 app.use('/api/v1/users', UserRoute);
 app.use('/api/v1/invoices', InvoiceRoute);
 
