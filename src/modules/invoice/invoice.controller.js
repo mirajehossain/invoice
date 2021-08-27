@@ -46,10 +46,9 @@ module.exports = {
 
   async invoiceSummary(req, res) {
     try {
-      let {
-        startDate, endDate,
-      } = req.query;
-
+      let { startDate, endDate } = req.query;
+      const { page = 1, limit = 10 } = req.query;
+      const skip = Number(limit) * (Number(page) - 1);
       const filter = {};
       if (startDate && endDate) {
         startDate = new Date(startDate);
@@ -100,7 +99,7 @@ module.exports = {
             users: '$invoices',
           },
         },
-      ]);
+      ]).skip(skip).limit(Number(limit));
 
       return res.status(200).send({
         success: true,
