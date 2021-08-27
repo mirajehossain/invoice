@@ -116,23 +116,10 @@ module.exports = {
   async getInvoices(req, res) {
     try {
       const {
-        page = 1, limit = 10, invoiceNo, username,
+        page = 1, limit = 10, invoiceNo,
       } = req.query;
       const filter = {};
       const skip = Number(limit) * (Number(page) - 1);
-      if (username) {
-        const user = await UserModel.findOne({ username });
-        if (!user) {
-          return res
-            .status(400)
-            .send({
-              success: false,
-              message: 'User does not found',
-            });
-        }
-
-        filter.user_id = user._id;
-      }
 
       if (invoiceNo) {
         filter.invoice_no = invoiceNo;
@@ -215,11 +202,6 @@ module.exports = {
         itemLookup,
         userLookup,
         { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
-        {
-          $project: {
-            'user.password': 0,
-          },
-        },
       ]);
 
       return res.status(200).send({
