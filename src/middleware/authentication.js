@@ -1,9 +1,12 @@
-const jwt = require('jsonwebtoken');
-
 module.exports = {
-  generateToken(data) {
-    return jwt.sign(data, process.env.JWT_ACCESS_TOKEN_SECRET, {
-      expiresIn: process.env.JWT_ACCESS_TOKEN_EXP,
+  isLoggedIn(req, res, next) {
+    if (req.user) {
+      return next();
+    }
+    return res.status(401).send({
+      success: false,
+      message: 'Unauthorized',
     });
   },
+
 };

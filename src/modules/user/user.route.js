@@ -1,6 +1,4 @@
 const express = require('express');
-// const schema = require('./user.schema');
-// const { JOI } = require('../../config/constants');
 
 const UserController = require('./user.controller');
 

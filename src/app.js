@@ -3,16 +3,18 @@ const passport = require('passport');
 const http = require('http');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
+const cookieSession = require('cookie-session');
 
 const cors = require('cors');
 const { graphqlHTTP } = require('express-graphql');
 
-const { serializeUser, GoogleStrategy } = require('./modules/auth/authenticator');
+const { serializeUser, deserializeUser, GoogleStrategy } = require('./modules/auth/authenticator');
 const AuthRoute = require('./modules/auth/auth.route');
 const UserRoute = require('./modules/user/user.route');
 const InvoiceRoute = require('./modules/invoice/invoice.route');
 const db = require('./config/database');
 const graphqlSchema = require('./modules/graphql/schema');
+const { isLoggedIn } = require('./middleware/authentication');
 
 const app = express();
 
@@ -26,6 +28,13 @@ const extensions = ({ context }) => ({
   runTime: Date.now() - context.startTime,
 });
 
+app.use(cookieSession({
+  name: 'google-auth-session',
+  maxAge: 24 * 60 * 60 * 1000,
+  keys: ['user', 'token'],
+}));
+
+
 // connect DB
 db.connection().then(() => {
   console.log('database is connected');
@@ -35,18 +44,10 @@ db.connection().then(() => {
 
 // passport middleware
 app.use(passport.initialize());
+app.use(passport.session());
 passport.serializeUser(serializeUser);
+passport.deserializeUser(deserializeUser);
 passport.use(GoogleStrategy);
-
-app.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile'] }));
-
-app.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/api/auth/login' }),
-  (req, res) => {
-    // Successful authentication, redirect home.
-    res.redirect('/');
-  });
 
 app.use(morgan('dev'));
 
@@ -78,9 +79,10 @@ app.use(
 // Set root route
 app.get('/', (req, res) => res.send({ message: 'welcome to the api service' }));
 
+
 // Routing
-app.use('/api/auth/', AuthRoute);
-app.use('/api/v1/*', passport.authenticate('google'));
+app.use('/', AuthRoute);
+app.use('/api/v1/*', isLoggedIn);
 app.use('/api/v1/users', UserRoute);
 app.use('/api/v1/invoices', InvoiceRoute);
 

@@ -1,5 +1,6 @@
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const { UserModel } = require('../user/user.model');
+const { userType } = require('../../config/constants');
 
 require('dotenv').config('.env');
 
@@ -11,12 +12,20 @@ module.exports.GoogleStrategy = new GoogleStrategy({
 },
 (async (accessToken, refreshToken, profile, cb) => {
   try {
-    console.log(`accessToken: ${accessToken}`);
+    console.log(`accessToken: ${accessToken.toString()}`);
     console.log(`refreshToken: ${refreshToken}`);
     console.log(`profile: ${JSON.stringify(profile)}`);
-    const user = await UserModel.findOne({ google_id: profile.id }).lean();
+    let user = await UserModel.findOne({ google_id: profile.id }).lean();
     if (!user) {
-      // create new user;
+    // create new user;
+      const profileImage = profile.photos.length ? profile.photos[0].value : null;
+      const payload = {
+        google_id: profile.id,
+        name: profile.displayName,
+        image: profileImage,
+        userType: [userType.user],
+      };
+      user = await UserModel.create(payload);
     }
     cb(null, user);
   } catch (e) {
@@ -26,5 +35,10 @@ module.exports.GoogleStrategy = new GoogleStrategy({
 
 
 module.exports.serializeUser = (user, done) => {
+  done(null, user);
+};
+
+
+module.exports.deserializeUser = (user, done) => {
   done(null, user);
 };
