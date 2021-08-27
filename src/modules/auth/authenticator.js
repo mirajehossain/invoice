@@ -19,10 +19,12 @@ module.exports.GoogleStrategy = new GoogleStrategy({
     if (!user) {
     // create new user;
       const profileImage = profile.photos.length ? profile.photos[0].value : null;
+      const email = profile.photos.length ? profile.emails[0].value : null;
       const payload = {
         google_id: profile.id,
         name: profile.displayName,
         image: profileImage,
+        email,
         userType: [userType.user],
       };
       user = await UserModel.create(payload);

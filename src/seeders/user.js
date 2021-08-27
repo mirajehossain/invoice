@@ -1,4 +1,3 @@
-const bcrypt = require('bcryptjs');
 const faker = require('faker');
 const { userType } = require('../config/constants');
 const { UserModel } = require('../modules/user/user.model');
@@ -11,10 +10,6 @@ db.connection().then(() => {
   console.error(e);
 });
 
-
-const password = '123456';
-const hashPass = bcrypt.hashSync(password, Number(process.env.SALT_ROUND));
-
 Array(30)
   .fill({ date: new Date() })
   .map(async (item, index) => {
@@ -26,9 +21,9 @@ Array(30)
       {
         name,
         username: faker.internet.userName(name),
-        mobile: faker.phone.phoneNumber(),
         image: faker.random.image(),
-        password: hashPass,
+        email: faker.internet.email(),
+        google_id: faker.datatype.uuid(),
         userType: [userType.user],
         created_at: date.toISOString(),
         updated_at: date.toISOString(),
@@ -36,9 +31,9 @@ Array(30)
       {
         name,
         username: faker.internet.userName(name),
-        mobile: faker.phone.phoneNumber(),
+        google_id: faker.datatype.uuid(),
+        email: faker.internet.email(),
         image: faker.random.image(),
-        password: hashPass,
         userType: [userType.user],
         created_at: date.toISOString(),
         updated_at: date.toISOString(),

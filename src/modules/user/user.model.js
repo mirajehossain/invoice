@@ -9,9 +9,8 @@ const UserSchema = new Schema({
   name: {
     type: String, trim: true, required: true, index: true,
   },
-  mobile: {
-    type: String, trim: true,
-  },
+  email: { type: String },
+  mobile: { type: String, trim: true },
   image: { type: String, required: false },
 
 }, { versionKey: false, timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
