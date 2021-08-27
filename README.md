@@ -18,7 +18,7 @@ Run on Docker: `docker compose up --build`
 To run tests: `npm run test`
 
 
-     `/api/v1/*` API's are secured, to access those API, uer must have to logged using google oauth provider 
+     `/api/v1/*` API's are secured, to access those API, user must have to logged using google oauth provider 
 
 
 ### get users
