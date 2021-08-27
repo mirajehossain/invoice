@@ -9,6 +9,8 @@ const CustomUserType = new GraphQLObjectType({
       type: new GraphQLList(GraphQLString),
     },
     name: { type: GraphQLString },
+    google_id: { type: GraphQLString },
+    email: { type: GraphQLString },
   }),
 });
 
