@@ -91,9 +91,9 @@ describe('/GET invoice details or empty object if not found', () => {
 
 
 /*
- * Test the /GET invoice summary over month
+ * Test the /GET invoice summary
  */
-describe('/GET invoice summary for last month', () => {
+describe('/GET invoice summary', () => {
   it('it should return invoice summary ', (done) => {
     chai.request(server)
       .get('/api/v1/invoices/summary')
