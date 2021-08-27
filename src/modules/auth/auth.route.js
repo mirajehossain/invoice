@@ -17,7 +17,7 @@ router.get('/fail', (req, res) => res.status(401).send({
 router.get('/logout', (req, res) => {
   req.session = null;
   req.logout();
-  res.redirect('/');
+  return res.redirect('/');
 });
 
 router.get('/auth/google',
@@ -25,10 +25,7 @@ router.get('/auth/google',
 
 router.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/fail' }),
-  (req, res) => {
-    // Successful authentication, redirect home.
-    res.redirect('/success');
-  });
+  (req, res) => res.redirect('/success'));
 
 
 module.exports = router;

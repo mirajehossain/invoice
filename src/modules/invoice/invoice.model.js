@@ -6,7 +6,7 @@ const { Schema } = mongoose;
 
 const InvoiceSchema = new Schema({
   invoice_no: {
-    type: Schema.Types.String, required: true, unique: true, index: true,
+    type: Schema.Types.String, unique: true, index: true,
   },
   user_id: { type: Schema.Types.ObjectId, required: true },
   contact_number: { type: Schema.Types.String },
@@ -15,7 +15,16 @@ const InvoiceSchema = new Schema({
   total: { type: Schema.Types.Number },
 
 }, { versionKey: false, timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
+InvoiceSchema.pre('save', function (next) {
+  if (!this.invoice_no) {
+    this.invoice_no = `ENV${new Date().valueOf().valueOf()}`;
+  }
+  next();
+});
 
+InvoiceSchema.post('save', (doc, next) => {
+  next();
+});
 const InvoiceModel = mongoose.model('invoices', InvoiceSchema);
 
 const InvoiceItemSchema = new Schema({
