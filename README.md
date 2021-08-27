@@ -27,6 +27,10 @@ To run tests: `npm run test`
      `/api/v1/*` API's are secured, to access those API, user must have to logged using google oauth provider 
 
 
+For data seeding
+- `npm run seed:user`
+- `npm run seed:invoice`
+
 ### Auth
 ```shell
 url: http://localhost:8000/auth/google
