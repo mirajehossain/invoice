@@ -11,6 +11,7 @@ module.exports = {
   createInvoice: Joi.object({
     contact_number: Joi.string().required(),
     address: Joi.string().required(),
+    user_id: Joi.string(),
     items: Joi.array().items(items).min(1).required(),
   }),
 };

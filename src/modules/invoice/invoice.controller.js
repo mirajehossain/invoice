@@ -10,8 +10,9 @@ module.exports = {
 
       const total = body.items.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0);
       const invoiceNo = `INV${new Date().valueOf()}`;
+      const userId = body.user_id ? body.user_id : req.user._id;
       const payload = {
-        user_id: req.user._id,
+        user_id: userId,
         address: body.address,
         contact_number: body.contact_number,
         status: invoiceStatus.pending,
@@ -25,11 +26,12 @@ module.exports = {
       await InvoiceItemModel.insertMany(invoiceItems);
 
       // add customer tag if not exists on user
-      await UserModel.findOneAndUpdate({ _id: req.user._id },
+      await UserModel.findOneAndUpdate({ _id: userId },
         { $addToSet: { userType: userType.customer } });
 
-      return res.status(200).send({
+      return res.status(201).send({
         success: true,
+        message: 'invoice created successfully',
         data: invoice,
       });
     } catch (e) {
@@ -102,6 +104,7 @@ module.exports = {
 
       return res.status(200).send({
         success: true,
+        message: 'Summary',
         data: summary,
       });
     } catch (e) {
@@ -160,6 +163,7 @@ module.exports = {
 
       return res.status(200).send({
         success: true,
+        message: 'Invoices',
         data: invoices,
         count,
       });
@@ -207,6 +211,7 @@ module.exports = {
 
       return res.status(200).send({
         success: true,
+        message: 'Invoice details',
         data: invoice.length ? invoice[0] : {},
       });
     } catch (e) {
