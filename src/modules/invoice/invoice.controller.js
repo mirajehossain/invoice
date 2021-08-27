@@ -75,26 +75,27 @@ module.exports = {
             from: 'users', localField: '_id.customer', foreignField: '_id', as: 'details',
           },
         },
-        { $project: { 'details.password': 0, 'details.created_at': 0, 'details.updated_at': 0 } },
+        { $unwind: { path: '$details', preserveNullAndEmptyArrays: true } },
+        { $project: { 'details.created_at': 0, 'details.updated_at': 0 } },
         {
           $group: {
             _id: '$_id.created_at',
             invoices: {
               $push: {
                 user: '$details',
-                count: '$invoiceCount',
+                invoice_count: '$invoiceCount',
               },
             },
-            count: { $sum: '$invoiceCount' },
+            total_invoice_count: { $sum: '$invoiceCount' },
           },
         },
-        { $sort: { count: -1 } },
+        { $sort: { total_invoice_count: -1 } },
         {
           $project: {
             _id: 0,
             date: '$_id',
-            invoices: '$invoices',
-            count: '$count',
+            total_invoice_count: '$total_invoice_count',
+            users: '$invoices',
           },
         },
       ]);
