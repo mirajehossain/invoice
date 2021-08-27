@@ -331,4 +331,17 @@ query {
 
 
 
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+There is a requirement which is I need to create 4 different collections `(users, customers, invoices, invoice_items)`.
+But, I create three `(users, invoices, invoice_items)` Why I do that?
+
+It seems the `customers` collection is only used for if any user create any invoice/s then a new customer will create if not exists in `customers` collection.
+
+For this reason, I think the better way is to add a `userType` field in the `users` collection, so that we can add tags like `user/customer` into `userType`. 
+By default, every user has default `userType` which is `user`.
+
+For any kind of customer-related query, we can get it from users collection by using `userType` column.
+
 ##### THANKS
