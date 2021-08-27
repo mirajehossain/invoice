@@ -1,7 +1,15 @@
 const { UserTC } = require('../../user/user.model');
-require('../resolvers/user.resolver');
 
-
+UserTC.addRelation(
+  'friends',
+  {
+    resolver: () => UserTC.getResolver('findByIds'),
+    prepareArgs: { // resolver `findByIds` has `_ids` arg, let provide value to it
+      _ids: source => source.friendsIds,
+    },
+    projection: { friendsIds: 1 }, // point fields in source object, which should be fetched from DB
+  },
+);
 const UserMutation = {
   userCreateOne: UserTC.getResolver('createOne'),
   userCreateMany: UserTC.getResolver('createMany'),
@@ -11,7 +19,17 @@ const UserMutation = {
   userRemoveById: UserTC.getResolver('removeById'),
   userRemoveOne: UserTC.getResolver('removeOne'),
   userRemoveMany: UserTC.getResolver('removeMany'),
-  fakeData: UserTC.getResolver('user'),
+  friends: UserTC.addRelation(
+    'friends',
+    {
+      resolver: () => UserTC.getResolver('findByIds'),
+      prepareArgs: { // resolver `findByIds` has `_ids` arg, let provide value to it
+        _ids: source => source.friendsIds,
+      },
+      projection: { friendsIds: 1 },
+      // point fields in source object, which should be fetched from DB
+    },
+  ),
 };
 
 module.exports = { UserMutation };

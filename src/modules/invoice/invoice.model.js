@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { composeWithMongoose } = require('graphql-compose-mongoose');
+const { AddGetSummaryResolver } = require('../graphql/resolvers/summary.resolver');
 
 const { Schema } = mongoose;
 
@@ -26,9 +27,21 @@ const InvoiceItemSchema = new Schema({
 }, { versionKey: false, timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
 
 const InvoiceItemModel = mongoose.model('invoice_items', InvoiceItemSchema);
+const InvoiceTC = composeWithMongoose(InvoiceModel);
+const InvoiceItemTC = composeWithMongoose(InvoiceItemModel);
+
+AddGetSummaryResolver(InvoiceTC, InvoiceModel); // Attach the resolver
+InvoiceTC.addRelation(
+  'invoiceSummary',
+  {
+    resolver: () => InvoiceTC.getResolver('getSummary'),
+  },
+);
+
+
 module.exports = {
   InvoiceModel,
   InvoiceItemModel,
-  InvoiceTC: composeWithMongoose(InvoiceModel),
-  InvoiceItemTC: composeWithMongoose(InvoiceItemModel),
+  InvoiceTC,
+  InvoiceItemTC,
 };
