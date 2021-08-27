@@ -21,6 +21,12 @@ To run tests: `npm run test`
      `/api/v1/*` API's are secured, to access those API, user must have to logged using google oauth provider 
 
 
+### Auth
+```shell
+url: http://localhost:8000/auth/google
+description: url for authentication using google oauth2
+```
+
 ### get users
 ```shell
 method: get
