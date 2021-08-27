@@ -2,7 +2,7 @@
 
 ### Installation
 ```
- cd invoice-service
+ cd invoice
  npm install
 ```
 
@@ -10,10 +10,16 @@
 Before run: copy `.env.example` to 	`.env`
 
 To run the project `npm start`
+
 Local url: `http://localhost:8000`
+
 GraphQL url: `http://localhost:8000/graphql`
 
-Run on Docker: `docker compose up --build`
+Run on Docker: 
+- `first, we should update the url in .env DB_URL=mongodb://mongo:27017/invoice-service`
+- `docker compose up --build`
+
+
 
 To run tests: `npm run test`
 
