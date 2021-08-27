@@ -191,6 +191,144 @@ response: {
 }
 
 ```
+----------------------------------------------
+
+# graphql
+
+```shell
+
+# get users
+query {
+  uesrs: userMany(skip:0, limit:1, filter: {email:"mdalamin8521@gmail.com"}) {
+    _id
+    name
+    google_id
+    email
+    userType
+    image
+    updated_at
+    created_at
+  }
+
+
+# create invoice
+mutation {
+    invoiceCreateOne(record: {
+    user_id:"6128c6ccca6775bdb2c83916",
+    address: "Dhaka", 
+    contact_number:"01922334455", 
+    status:"pending", 
+    total: 500
+    }) {
+    
+   recordId
+   record {
+      invoice_no
+      contact_number
+      address
+      status
+      total
+      updated_at
+      created_at
+    }
+  }
+}
+
+
+
+
+# create invoice items
+mutation {
+  invoiceItemCreateMany(records: [
+    {name: "Ice cream", quantity: 5, price: 100, invoice_no: "ENV1630096496122"}
+  ]) {
+   recordIds 
+  }
+}
+
+
+# get invoices
+query {
+  invoices: invoiceMany(skip:0, limit:1){
+    total
+    invoice_no
+    status
+    address
+    contact_number
+    user_id
+    user: invoiceUser {
+      name
+      google_id
+  		email
+      userType
+      image
+      updated_at
+      created_at
+    }
+    items:invoiceDetails {
+      name
+      quantity
+      price
+      updated_at
+      created_at
+    }
+  }
+}
+
+
+
+
+# get invoice by invoice no
+query {
+  invoice: invoiceOne(filter: {invoice_no:"INV1630096035268"}) {
+    total
+    invoice_no
+    status
+    address
+    contact_number
+    user_id
+    user: invoiceUser {
+      name
+      google_id
+  		email
+      userType
+      image
+      updated_at
+      created_at
+    }
+    items:invoiceDetails {
+      name
+      quantity
+      price
+      updated_at
+      created_at
+    }
+    
+  }
+}
+
+
+# invoice summary
+query {
+  summary: invoiceSummary{
+    date
+    total_invoice_count
+    users {
+      invoice_count
+    	user {
+    	  name
+    	  userType
+    	  email
+    	  google_id
+    	}
+    }
+  }
+}
+
+
+```
+
+
 
 
 ##### THANKS
