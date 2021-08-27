@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const { composeWithMongoose } = require('graphql-compose-mongoose');
+const { userType } = require('../../config/constants');
+const { UserModel } = require('../user/user.model');
 const { AddGetSummaryResolver } = require('../graphql/resolvers/summary.resolver');
 
 const { Schema } = mongoose;
@@ -22,7 +24,10 @@ InvoiceSchema.pre('save', function (next) {
   next();
 });
 
-InvoiceSchema.post('save', (doc, next) => {
+InvoiceSchema.post('save', async (doc, next) => {
+  // add customer tag if not exists on user
+  await UserModel.findOneAndUpdate({ _id: doc.user_id },
+    { $addToSet: { userType: userType.customer } });
   next();
 });
 const InvoiceModel = mongoose.model('invoices', InvoiceSchema);

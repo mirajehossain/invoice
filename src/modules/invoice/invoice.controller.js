@@ -1,6 +1,4 @@
 const { invoiceStatus } = require('../../config/constants');
-const { userType } = require('../../config/constants');
-const { UserModel } = require('../user/user.model');
 const { InvoiceModel, InvoiceItemModel } = require('./invoice.model');
 
 module.exports = {
@@ -24,10 +22,6 @@ module.exports = {
       const invoiceItems = body.items.map(item => ({ ...item, invoice_no: invoiceNo }));
 
       await InvoiceItemModel.insertMany(invoiceItems);
-
-      // add customer tag if not exists on user
-      await UserModel.findOneAndUpdate({ _id: userId },
-        { $addToSet: { userType: userType.customer } });
 
       return res.status(201).send({
         success: true,
