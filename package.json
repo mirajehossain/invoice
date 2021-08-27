@@ -8,7 +8,7 @@
     "start:dev": "nodemon src/app.js",
     "seed:user": "node src/seeders/user.js",
     "seed:invoice": "node src/seeders/invoice.js",
-    "test": "node_modules/.bin/mocha  tests/**/*.test.js --timeout 10000"
+    "test": "node_modules/.bin/mocha  src/tests/**/*.test.js --timeout 10000"
   },
   "dependencies": {
     "@hapi/joi": "^16.1.8",
@@ -21,10 +21,7 @@
     "graphql": "^15.5.1",
     "graphql-compose": "^9.0.2",
     "graphql-compose-mongoose": "^9.5.4",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.7.1",
     "morgan": "^1.10.0",
-    "multer": "^1.4.2",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
     "passport-oauth2": "^1.6.0"
