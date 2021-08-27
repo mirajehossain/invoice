@@ -3,22 +3,16 @@ const { InvoiceTC, InvoiceItemTC } = require('../../invoice/invoice.model');
 
 const InvoiceMutation = {
   invoiceCreateOne: InvoiceTC.getResolver('createOne'),
-  invoiceCreateMany: InvoiceTC.getResolver('createMany'),
   invoiceUpdateById: InvoiceTC.getResolver('updateById'),
   invoiceUpdateOne: InvoiceTC.getResolver('updateOne'),
-  invoiceUpdateMany: InvoiceTC.getResolver('updateMany'),
   invoiceRemoveById: InvoiceTC.getResolver('removeById'),
   invoiceRemoveOne: InvoiceTC.getResolver('removeOne'),
-  invoiceRemoveMany: InvoiceTC.getResolver('removeMany'),
 
   invoiceItemCreateOne: InvoiceItemTC.getResolver('createOne'),
-  invoiceItemCreateMany: InvoiceItemTC.getResolver('createMany'),
   invoiceItemUpdateById: InvoiceItemTC.getResolver('updateById'),
   invoiceItemUpdateOne: InvoiceItemTC.getResolver('updateOne'),
-  invoiceItemUpdateMany: InvoiceItemTC.getResolver('updateMany'),
   invoiceItemRemoveById: InvoiceItemTC.getResolver('removeById'),
   invoiceItemRemoveOne: InvoiceItemTC.getResolver('removeOne'),
-  invoiceItemRemoveMany: InvoiceItemTC.getResolver('removeMany'),
   invoiceSummary: InvoiceTC.addRelation(
     'invoiceSummary',
     {
@@ -29,7 +23,7 @@ const InvoiceMutation = {
   invoiceItemDetails: InvoiceTC.addRelation(
     'invoiceDetails',
     {
-      resolver: () => InvoiceItemTC.get('$findMany'), // shorthand for `UserTC.getResolver('findMany')`
+      resolver: () => InvoiceItemTC.get('$findMany'),
       prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
         filter: source => ({
           _operators: { // Applying criteria on fields which have
