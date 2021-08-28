@@ -6,6 +6,7 @@ const server = require('../app');
 
 chai.should();
 let user;
+let invoiceData;
 
 
 chai.use(chaiHttp);
@@ -49,6 +50,7 @@ describe('/POST create new invoice', () => {
         res.should.have.status(201);
         res.body.should.be.a('object');
         res.body.should.have.property('data');
+        invoiceData = res.body.data;
         done();
       });
   });
@@ -89,6 +91,28 @@ describe('/GET invoice details or empty object if not found', () => {
   });
 });
 
+
+/*
+ * Test the /GET invoice route
+ */
+describe('/UPDATE invoice', () => {
+  it('it should update invoice ', (done) => {
+    const payload = {
+      address: 'address updated',
+      contact_number: '01922334455',
+    };
+    chai.request(server)
+      .patch(`/api/v1/invoices/${invoiceData.invoice_no}`)
+      .send(payload)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.should.have.property('data');
+        res.body.data.should.be.a('object');
+        done();
+      });
+  });
+});
 
 /*
  * Test the /GET invoice summary
