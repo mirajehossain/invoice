@@ -8,15 +8,17 @@ require('dotenv').config('.env');
 module.exports.GoogleStrategy = new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: 'http://localhost:8000/auth/google/callback',
+  callbackURL: process.env.GOOGLE_CALLBACK_URL,
 },
 (async (accessToken, refreshToken, profile, cb) => {
   try {
     let user = await UserModel.findOne({ google_id: profile.id }).lean();
+
     if (!user) {
       // create new user;
       const profileImage = profile.photos.length ? profile.photos[0].value : null;
       const email = profile.photos.length ? profile.emails[0].value : null;
+
       const payload = {
         google_id: profile.id,
         name: profile.displayName,
@@ -26,6 +28,7 @@ module.exports.GoogleStrategy = new GoogleStrategy({
       };
       user = await UserModel.create(payload);
     }
+
     cb(null, user);
   } catch (e) {
     cb(e, null);

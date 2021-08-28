@@ -6,6 +6,7 @@ module.exports = {
       const { page = 1, limit = 10, userType } = req.query;
       const filter = {};
       const skip = Number(limit) * (Number(page) - 1);
+
       if (userType) {
         filter.userType = { $in: [userType] };
       }
@@ -19,6 +20,7 @@ module.exports = {
       const count = await UserModel.countDocuments(filter);
       return res.status(200).send({
         success: true,
+        message: 'All users',
         count,
         data: users,
       });

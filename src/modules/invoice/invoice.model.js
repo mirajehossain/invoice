@@ -30,7 +30,9 @@ InvoiceSchema.post('save', async (doc, next) => {
     { $addToSet: { userType: userType.customer } });
   next();
 });
+
 const InvoiceModel = mongoose.model('invoices', InvoiceSchema);
+
 
 const InvoiceItemSchema = new Schema({
   invoice_no: { type: String, required: true },
@@ -41,6 +43,7 @@ const InvoiceItemSchema = new Schema({
 }, { versionKey: false, timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
 
 const InvoiceItemModel = mongoose.model('invoice_items', InvoiceItemSchema);
+
 const InvoiceTC = composeWithMongoose(InvoiceModel);
 const InvoiceItemTC = composeWithMongoose(InvoiceItemModel);
 

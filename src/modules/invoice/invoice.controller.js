@@ -7,7 +7,6 @@ module.exports = {
       const { body } = req;
 
       const total = body.items.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0);
-      const invoiceNo = `INV${new Date().valueOf()}`;
       const userId = body.user_id ? body.user_id : req.user._id;
       const payload = {
         user_id: userId,
@@ -15,11 +14,10 @@ module.exports = {
         contact_number: body.contact_number,
         status: invoiceStatus.pending,
         total,
-        invoice_no: invoiceNo,
       };
 
       const invoice = await InvoiceModel.create(payload);
-      const invoiceItems = body.items.map(item => ({ ...item, invoice_no: invoiceNo }));
+      const invoiceItems = body.items.map(item => ({ ...item, invoice_no: invoice.invoice_no }));
 
       await InvoiceItemModel.insertMany(invoiceItems);
 
@@ -44,6 +42,7 @@ module.exports = {
       const { page = 1, limit = 10 } = req.query;
       const skip = Number(limit) * (Number(page) - 1);
       const filter = {};
+
       if (startDate && endDate) {
         startDate = new Date(startDate);
         endDate = new Date(endDate);
@@ -54,6 +53,7 @@ module.exports = {
           $lte: endDate,
         };
       }
+
       const summary = await InvoiceModel.aggregate([
         { $match: filter },
         {
@@ -112,9 +112,7 @@ module.exports = {
 
   async getInvoices(req, res) {
     try {
-      const {
-        page = 1, limit = 10, invoiceNo,
-      } = req.query;
+      const { page = 1, limit = 10, invoiceNo } = req.query;
       const filter = {};
       const skip = Number(limit) * (Number(page) - 1);
 
@@ -152,13 +150,14 @@ module.exports = {
         },
       ]).sort({ created_at: -1 }).skip(skip)
         .limit(Number(limit));
+
       const count = await InvoiceModel.countDocuments(filter);
 
       return res.status(200).send({
         success: true,
         message: 'Invoices',
-        data: invoices,
         count,
+        data: invoices,
       });
     } catch (e) {
       console.log(e);

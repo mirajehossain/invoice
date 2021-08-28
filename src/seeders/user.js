@@ -20,7 +20,6 @@ Array(30)
     const users = [
       {
         name,
-        username: faker.internet.userName(name),
         image: faker.random.image(),
         email: faker.internet.email(),
         google_id: faker.datatype.uuid(),
@@ -30,7 +29,6 @@ Array(30)
       },
       {
         name,
-        username: faker.internet.userName(name),
         google_id: faker.datatype.uuid(),
         email: faker.internet.email(),
         image: faker.random.image(),
