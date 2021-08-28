@@ -31,11 +31,21 @@ For data seeding
 - `npm run seed:user`
 - `npm run seed:invoice`
 
-### Auth
+## Auth
+
+### Login
 ```shell
+method: get
 url: http://localhost:8000/auth/google
 description: url for authentication using google oauth2
 ```
+
+### Logout
+```shell
+method: get
+url: http://localhost:8000/logout
+```
+
 
 ### get users
 ```shell
