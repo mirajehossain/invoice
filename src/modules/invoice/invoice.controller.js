@@ -215,4 +215,38 @@ module.exports = {
       });
     }
   },
+
+  async updateInvoice(req, res) {
+    try {
+      const { invoiceNo } = req.params;
+
+      // only contact number and address can be modified.
+      const payload = req.body;
+
+      const invoice = await InvoiceModel.findOne({ invoice_no: invoiceNo });
+
+      if (!invoice) {
+        return res.status(400).send({
+          success: false,
+          message: 'invoice not found',
+        });
+      }
+
+      const updatedInvoice = await InvoiceModel
+        .findOneAndUpdate({ invoice_no: invoiceNo }, payload, { new: true });
+
+      return res.send({
+        success: true,
+        message: 'invoice updated successfully',
+        data: updatedInvoice,
+      });
+    } catch (e) {
+      console.log(e);
+      return res.status(500).send({
+        success: false,
+        message: 'An error occur',
+        error: e.message,
+      });
+    }
+  },
 };

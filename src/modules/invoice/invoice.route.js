@@ -14,4 +14,8 @@ router.post('/',
 router.get('/', InvoiceController.getInvoices);
 router.get('/summary', InvoiceController.invoiceSummary);
 router.get('/:invoiceNo', InvoiceController.getInvoice);
+
+router.patch('/:invoiceNo',
+  middleware.joiValidator(schema.updateInvoice, JOI.property.body),
+  InvoiceController.updateInvoice);
 module.exports = router;
