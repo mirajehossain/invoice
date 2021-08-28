@@ -17,5 +17,6 @@ module.exports = {
     processing: 'processing',
     shipped: 'shipped',
     delivered: 'delivered',
+    canceled: 'canceled',
   },
 };

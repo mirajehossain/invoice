@@ -207,6 +207,36 @@ response: {
 }
 
 ```
+
+
+### update invoice:
+```shell
+method: patch
+url: http://localhost:8000/api/v1/invoices/:invoice_no
+body: {
+	status: 'pending/processing/shipped/delivered/canceled',
+	address: 'mirpur DOHS',
+	contact_number: '01922334455'
+	
+}
+query: n/a
+response: {
+	"success": true,
+	"message": "invoice updated successfully",
+	"data": {
+		"_id": "6129361d8f885abb20b3193b",
+		"user_id": "612654eb198be44d47d5cec4",
+		"address": "Mirpur DOHS",
+		"contact_number": "01922334455",
+		"status": "pending",
+		"total": 220,
+		"invoice_no": "INV1630090781764",
+		"created_at": "2021-08-27T18:59:41.770Z",
+		"updated_at": "2021-08-27T18:59:41.770Z",
+	}
+}
+
+```
 ----------------------------------------------
 
 # graphql
@@ -319,10 +349,24 @@ query {
       updated_at
       created_at
     }
-    
   }
 }
 
+
+# update invoice
+mutation {
+  invoiceUpdateOne(filter: {invoice_no: "INV1630096035268"}, record:{status: "processing"}) {
+		record {
+		  invoice_no
+		  contact_number
+		  address
+		  status
+		  total
+		  updated_at
+		  created_at
+		}
+  }
+}
 
 # invoice summary
 query {
